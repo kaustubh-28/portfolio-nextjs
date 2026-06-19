@@ -2,7 +2,7 @@
 
 This is my personal portfolio, built with Next.js, Tailwind CSS v4, and Framer Motion. I went with a sort of "engineering systems" theme — sections are framed like dossiers, diagnostics, and telemetry readouts rather than the usual landing/about/projects layout.
 
-**Live site:** [add deployed URL here]
+**Live site:** [Coming Soon!]
 
 ## Stack
 
