@@ -1,0 +1,82 @@
+@import "tailwindcss";
+
+@theme {
+  /* palette */
+  --color-obsidian: #0b090a;
+  --color-carbon: #161a1d;
+  --color-carbon-light: #1e2328;
+  --color-crimson-deep: #660708;
+  --color-crimson: #a4161a;
+  --color-crimson-bright: #ba181b;
+  --color-signal: #e5383b;
+  --color-ash: #b1a7a6;
+  --color-silver: #d3d3d3;
+  --color-frost: #f5f3f4;
+  --color-white: #ffffff;
+
+  /* semantic tokens */
+  --color-background: var(--color-obsidian);
+  --color-surface: var(--color-carbon);
+  --color-surface-raised: var(--color-carbon-light);
+  --color-text-primary: var(--color-frost);
+  --color-text-muted: var(--color-ash);
+  --color-accent: var(--color-crimson-bright);
+  --color-accent-hover: var(--color-signal);
+  --color-accent-text: var(--color-white);
+  --color-border: var(--color-carbon-light);
+
+  --font-display: var(--font-display-sora);
+  --font-body: var(--font-body-space);
+  --font-mono: var(--font-mono);
+}
+
+@layer base {
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: var(--color-background);
+    color: var(--color-text-primary);
+    font-family: var(--font-body);
+    -webkit-font-smoothing: antialiased;
+    transition:
+      background-color 0.3s ease,
+      color 0.3s ease;
+  }
+
+  ::selection {
+    background-color: var(--color-accent);
+    color: var(--color-accent-text);
+  }
+
+  /* light mode overrides — flip semantic tokens only */
+
+  [data-theme="light"] {
+    --color-background: var(--color-cream);
+    --color-surface: var(--color-cream-surface);
+    --color-text-primary: var(--color-forest);
+    --color-text-muted: var(--color-fern);
+    --color-accent: var(--color-burnt);
+    --color-accent-hover: var(--color-fern);
+    --color-accent-text: var(--color-cream);
+  }
+}
+
+@utility font-display {
+  font-family: var(--font-display);
+}
+
+@utility font-body {
+  font-family: var(--font-body);
+}
+
+@utility font-mono {
+  font-family: var(--font-mono);
+}
