@@ -4,7 +4,7 @@ This is my personal portfolio, built with Next.js, Tailwind CSS v4, and Framer M
 
 
 ## Live Site
-Visit the live portal here: **[kaustubh.dev](https://github.com/kaustubh-28/portfolio-nextjs)** _(or update with your custom deployment URL)_
+Visit the live portal here: _[coming soon]_ 
 
 ---
 
