@@ -5,6 +5,7 @@ import { motion, useInView, AnimatePresence } from "framer-motion";
 import { SiGithub } from "@icons-pack/react-simple-icons";
 import { BootstrapLinkedin } from "../icons/LinkedIn";
 import { metaData } from "@/data/meta";
+import { EMAIL_COPY_FEEDBACK_DURATION_MS, CLOCK_UPDATE_INTERVAL_MS, SECTIONS } from "@/data/constants";
 
 interface LogLine {
   id: string;
@@ -12,7 +13,7 @@ interface LogLine {
   delay: number;
 }
 
-export default function TransmissionSection() {
+export default function ContactMeSection() {
   const ref = useRef(null);
   const isInView = useInView(ref, { amount: 0.3 });
   const [copied, setCopied] = useState(false);
@@ -32,14 +33,14 @@ export default function TransmissionSection() {
     };
 
     updateClock();
-    const interval = setInterval(updateClock, 1000);
+    const interval = setInterval(updateClock, CLOCK_UPDATE_INTERVAL_MS);
     return () => clearInterval(interval);
   }, []);
 
   const handleCopy = () => {
     navigator.clipboard.writeText(metaData.email);
     setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+    setTimeout(() => setCopied(false), EMAIL_COPY_FEEDBACK_DURATION_MS);
   };
 
   const lines: LogLine[] = [
@@ -48,7 +49,7 @@ export default function TransmissionSection() {
       delay: 0,
       content: (
         <>
-          <span className="text-[var(--color-text-muted)]">
+          <span className="text-muted">
             &gt; SESSION_STATUS:
           </span>{" "}
           <span className="text-emerald-400">ACTIVE</span>
@@ -60,8 +61,8 @@ export default function TransmissionSection() {
       delay: 0.3,
       content: (
         <>
-          <span className="text-[var(--color-text-muted)]">&gt; LOCATION:</span>{" "}
-          <span className="text-[var(--color-text-primary)]">
+          <span className="text-muted">&gt; LOCATION:</span>{" "}
+          <span className="text-primary">
             New Delhi, IN [GMT+5:30]
           </span>
           {istTime && (
@@ -75,10 +76,10 @@ export default function TransmissionSection() {
       delay: 0.6,
       content: (
         <>
-          <span className="text-[var(--color-text-muted)]">
+          <span className="text-muted">
             &gt; AVAILABILITY:
           </span>{" "}
-          <span className="text-[var(--color-accent)]">
+          <span className="text-accent">
             OPEN_TO_OPPORTUNITIES
           </span>
         </>
@@ -93,7 +94,7 @@ export default function TransmissionSection() {
       id: "connect-header",
       delay: 1.0,
       content: (
-        <span className="text-[var(--color-text-muted)]">
+        <span className="text-muted">
           &gt; ESTABLISH_CONNECTION:
         </span>
       ),
@@ -103,14 +104,14 @@ export default function TransmissionSection() {
       delay: 1.3,
       content: (
         <div className="pl-4 space-y-1">
-          <span className="text-[var(--color-text-muted)]">[EMAIL] →</span>
+          <span className="text-muted">[EMAIL] →</span>
           <div className="flex flex-wrap items-center gap-2 pl-4">
-            <span className="text-[var(--color-text-primary)] break-all">
+            <span className="text-primary break-all">
               {metaData.email}
             </span>
             <button
               onClick={handleCopy}
-              className="font-mono text-[10px] px-2 py-0.5 border border-[var(--color-surface)] text-[var(--color-text-muted)] hover:border-[var(--color-accent)] hover:text-[var(--color-text-primary)] transition-colors uppercase tracking-widest shrink-0"
+              className="font-mono text-[10px] px-2 py-0.5 border border-surface text-muted hover:border-accent hover:text-primary transition-colors uppercase tracking-widest shrink-0"
             >
               {copied ? "COPIED" : "COPY"}
             </button>
@@ -128,10 +129,10 @@ export default function TransmissionSection() {
           rel="noopener noreferrer"
           className="block pl-4 space-y-1 group"
         >
-          <span className="text-[var(--color-text-muted)] group-hover:text-[var(--color-accent)] transition-colors">
+          <span className="text-muted group-hover:text-accent transition-colors">
             [LINKEDIN] →
           </span>
-          <div className="flex items-center gap-2 pl-4 text-[var(--color-text-primary)] group-hover:text-[var(--color-accent)] transition-colors">
+          <div className="flex items-center gap-2 pl-4 text-primary group-hover:text-accent transition-colors">
             <BootstrapLinkedin className="w-3.5 h-3.5 shrink-0" />
             <span className="break-all">/in/kaustubhsrivastava1624</span>
             <span className="shrink-0">↗</span>
@@ -149,10 +150,10 @@ export default function TransmissionSection() {
           rel="noopener noreferrer"
           className="block pl-4 space-y-1 group"
         >
-          <span className="text-[var(--color-text-muted)] group-hover:text-[var(--color-accent)] transition-colors">
+          <span className="text-muted group-hover:text-accent transition-colors">
             [GITHUB] →
           </span>
-          <div className="flex items-center gap-2 pl-4 text-[var(--color-text-primary)] group-hover:text-[var(--color-accent)] transition-colors">
+          <div className="flex items-center gap-2 pl-4 text-primary group-hover:text-accent transition-colors">
             <SiGithub className="w-3.5 h-3.5 shrink-0" />
             <span className="break-all">/kaustubh-28</span>
             <span className="shrink-0">↗</span>
@@ -169,7 +170,7 @@ export default function TransmissionSection() {
       id: "end",
       delay: 2.4,
       content: (
-        <span className="text-[var(--color-text-muted)]">
+        <span className="text-muted">
           &gt; END_TRANSMISSION
         </span>
       ),
@@ -178,20 +179,20 @@ export default function TransmissionSection() {
 
   return (
     <section
-      id="transmission"
+      id={SECTIONS[3].id}
       ref={ref}
-      className="border-t border-[var(--color-surface)] py-20 px-6 md:px-12 max-w-5xl mx-auto"
+      className="border-t border-surface py-20 px-6 md:px-12 max-w-5xl mx-auto"
     >
       <div className="space-y-1 mb-10">
-        <span className="font-mono text-xs uppercase tracking-widest text-[var(--color-accent)] block">
-          04 // CONTACT ME
+        <span className="font-mono text-xs uppercase tracking-widest text-accent block">
+          {SECTIONS[3].index} // {SECTIONS[3].label}
         </span>
-        <h2 className="font-display text-2xl md:text-3xl font-bold text-[var(--color-text-primary)] tracking-tight">
-          Open Connection
+        <h2 className="font-display text-2xl md:text-3xl font-bold text-primary tracking-tight">
+          {SECTIONS[3].title}
         </h2>
       </div>
 
-      <div className="border border-[var(--color-surface)] bg-[var(--color-surface)]/70 p-6 md:p-8 font-mono text-xs md:text-sm">
+      <div className="border border-surface bg-surface/70 p-6 md:p-8 font-mono text-xs md:text-sm">
         <AnimatePresence mode="wait">
           {isInView && (
             <motion.div key="log" className="flex flex-col gap-2.5">
@@ -213,8 +214,8 @@ export default function TransmissionSection() {
                 transition={{ duration: 0.2, delay: 2.7 }}
                 className="flex items-center gap-1 pt-1"
               >
-                <span className="text-[var(--color-accent)]">&gt;</span>
-                <span className="w-2 h-4 bg-[var(--color-accent)] animate-pulse" />
+                <span className="text-accent">&gt;</span>
+                <span className="w-2 h-4 bg-accent animate-pulse" />
               </motion.div>
             </motion.div>
           )}

@@ -3,6 +3,18 @@
 import { useState, useEffect, useRef } from "react";
 import { Zap, Keyboard, RefreshCw, AlertTriangle } from "lucide-react";
 import { TYPING_PROMPTS } from "@/data/typingPrompts";
+import {
+  STORAGE_KEY,
+  F1_LIGHTS_COUNT,
+  F1_LIGHT_INTERVAL_MS,
+  F1_MIN_DELAY_MS,
+  F1_RANDOM_DELAY_RANGE_MS,
+  REACTION_THRESHOLDS,
+  MS_IN_MINUTE,
+  AVG_WORD_LENGTH,
+  TYPING_INPUT_FOCUS_DELAY_MS,
+  SECTIONS,
+} from "@/data/constants";
 
 type ActiveTab = "LIGHTS" | "TYPING";
 type LightsState =
@@ -13,7 +25,7 @@ type LightsState =
   | "RESULT"
   | "JUMPSTART";
 
-const STORAGE_KEY = "ks_diagnostics_v1";
+
 
 interface DiagnosticsRecord {
   reactionBest: number | null;
@@ -101,6 +113,22 @@ export default function BenchmarksSection() {
     setCurrentPrompt(TYPING_PROMPTS[randomIndex]);
   };
 
+  const handleTabChange = (tab: ActiveTab) => {
+    if (timerRef.current) clearTimeout(timerRef.current);
+    if (intervalRef.current) clearInterval(intervalRef.current);
+
+    setLightsState("IDLE");
+    setLitCount(0);
+    setLightsAreOut(false);
+    setReactionTime(null);
+
+    setActiveTab(tab);
+
+    if (tab === "TYPING") {
+      resetTypingTest();
+    }
+  };
+
   // --- F1 LIGHTS CORE LOGIC ---
   const startLightsSequence = () => {
     if (timerRef.current) clearTimeout(timerRef.current);
@@ -115,18 +143,18 @@ export default function BenchmarksSection() {
     intervalRef.current = setInterval(() => {
       currentLit++;
       setLitCount(currentLit);
-      if (currentLit === 5) {
+      if (currentLit === F1_LIGHTS_COUNT) {
         if (intervalRef.current) clearInterval(intervalRef.current);
         setLightsState("WAIT");
 
-        const randomDelay = Math.random() * 2000 + 1500;
+        const randomDelay = Math.random() * F1_RANDOM_DELAY_RANGE_MS + F1_MIN_DELAY_MS;
         timerRef.current = setTimeout(() => {
           setLightsAreOut(true);
           setLightsState("GO");
           startTimeRef.current = performance.now();
         }, randomDelay);
       }
-    }, 800);
+    }, F1_LIGHT_INTERVAL_MS);
   };
 
   const triggerReactionClick = () => {
@@ -156,9 +184,9 @@ export default function BenchmarksSection() {
   };
 
   const reactionRating = (ms: number) => {
-    if (ms < 150) return "ELITE";
-    if (ms < 220) return "GOOD";
-    if (ms < 300) return "AVERAGE";
+    if (ms < REACTION_THRESHOLDS.ELITE) return "ELITE";
+    if (ms < REACTION_THRESHOLDS.GOOD) return "GOOD";
+    if (ms < REACTION_THRESHOLDS.AVERAGE) return "AVERAGE";
     return "SLOW";
   };
 
@@ -172,11 +200,11 @@ export default function BenchmarksSection() {
       setTypingStartTime(performance.now());
     }
 
-    setTypedText(value);
+    setTypedText(normalizedValue);
 
     if (normalizedValue === currentPrompt && typingStartTime) {
-      const durationInMinutes = (performance.now() - typingStartTime) / 60000;
-      const wordCount = currentPrompt.length / 5;
+      const durationInMinutes = (performance.now() - typingStartTime) / MS_IN_MINUTE;
+      const wordCount = currentPrompt.length / AVG_WORD_LENGTH;
       const result = Math.round(wordCount / durationInMinutes);
       setWpm(result);
       setIsTypingActive(false);
@@ -200,45 +228,42 @@ export default function BenchmarksSection() {
     setTypingStartTime(null);
     setWpm(null);
     selectRandomPrompt(); // Cycles to a completely fresh string target line
-    setTimeout(() => typingInputRef.current?.focus(), 50);
+    setTimeout(() => typingInputRef.current?.focus(), TYPING_INPUT_FOCUS_DELAY_MS);
   };
 
   return (
     <section
-      id="benchmarks"
-      className="border-t border-[var(--color-surface)] py-20 px-6 md:px-12 max-w-5xl mx-auto"
+      id={SECTIONS[2].id}
+      className="border-t border-surface py-20 px-6 md:px-12 max-w-5xl mx-auto"
     >
       <div className="space-y-8">
         <div className="space-y-1">
-          <span className="font-mono text-xs uppercase tracking-widest text-[var(--color-accent)] block">
-            03 // BENCHMARKS
+          <span className="font-mono text-xs uppercase tracking-widest text-accent block">
+            {SECTIONS[2].index} // {SECTIONS[2].label}
           </span>
-          <h2 className="font-display text-2xl md:text-3xl font-bold text-[var(--color-text-primary)] tracking-tight">
-            Performance Metrics
+          <h2 className="font-display text-2xl md:text-3xl font-bold text-primary tracking-tight">
+            {SECTIONS[2].title}
           </h2>
         </div>
 
-        <div className="flex gap-2 font-mono text-xs border-b border-[var(--color-surface)] pb-4">
+        <div className="flex gap-2 font-mono text-xs border-b border-surface pb-4">
           <button
-            onClick={() => setActiveTab("LIGHTS")}
+            onClick={() => handleTabChange("LIGHTS")}
             className={`px-4 py-2 flex items-center gap-2 border transition-all ${
               activeTab === "LIGHTS"
-                ? "bg-[var(--color-accent)] border-[var(--color-accent)] text-white"
-                : "bg-[var(--color-surface)] border-[var(--color-surface)] text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)]"
+                ? "bg-accent border-accent text-white"
+                : "bg-surface border-surface text-muted hover:text-primary"
             }`}
           >
             <Zap className="w-3.5 h-3.5" />
             <span>[01] // REFLEX_TEST</span>
           </button>
           <button
-            onClick={() => {
-              setActiveTab("TYPING");
-              resetTypingTest();
-            }}
+            onClick={() => handleTabChange("TYPING")}
             className={`px-4 py-2 flex items-center gap-2 border transition-all ${
               activeTab === "TYPING"
-                ? "bg-[var(--color-accent)] border-[var(--color-accent)] text-white"
-                : "bg-[var(--color-surface)] border-[var(--color-surface)] text-[var(--color-text-muted)] hover:text-[var(--color-text-primary)]"
+                ? "bg-accent border-accent text-white"
+                : "bg-surface border-surface text-muted hover:text-primary"
             }`}
           >
             <Keyboard className="w-3.5 h-3.5" />
@@ -246,30 +271,30 @@ export default function BenchmarksSection() {
           </button>
         </div>
 
-        <div className="border border-[var(--color-surface)] bg-[var(--color-surface)]/70 p-6 min-h-[320px] flex flex-col justify-between">
+        <div className="border border-surface bg-surface/70 p-6 min-h-[320px] flex flex-col justify-between">
           {/* --- TERMINAL SUB-SCREEN: F1 LIGHTS --- */}
           {activeTab === "LIGHTS" && (
             <div className="flex flex-col items-center justify-center space-y-8 py-4 my-auto w-full">
-              <div className="grid grid-cols-5 gap-3 bg-[var(--color-background)] border border-[var(--color-surface)] p-4 max-w-md w-full rounded-md justify-items-center">
+              <div className="grid grid-cols-5 gap-3 bg-background border border-surface p-4 max-w-md w-full rounded-md justify-items-center">
                 {[...Array(5)].map((_, i) => {
                   const isLit = i < litCount && !lightsAreOut;
                   return (
                     <div
                       key={i}
-                      className="w-12 h-12 rounded-full bg-[var(--color-surface)] border border-[var(--color-surface)]/50 flex flex-col justify-between p-1.5 overflow-hidden"
+                      className="w-12 h-12 rounded-full bg-surface border border-surface/50 flex flex-col justify-between p-1.5 overflow-hidden"
                     >
                       <div
                         className={`w-full h-[42%] rounded-full transition-all duration-75 ${
                           isLit
-                            ? "bg-[var(--color-accent)] shadow-[0_0_14px_var(--color-accent)]"
-                            : "bg-[var(--color-background)]"
+                            ? "bg-accent shadow-[0_0_14px_var(--color-accent)]"
+                            : "bg-background"
                         }`}
                       />
                       <div
                         className={`w-full h-[42%] rounded-full transition-all duration-75 ${
                           isLit
-                            ? "bg-[var(--color-accent)] shadow-[0_0_14px_var(--color-accent)]"
-                            : "bg-[var(--color-background)]"
+                            ? "bg-accent shadow-[0_0_14px_var(--color-accent)]"
+                            : "bg-background"
                         }`}
                       />
                     </div>
@@ -283,7 +308,7 @@ export default function BenchmarksSection() {
                 lightsState === "JUMPSTART" ? (
                   <button
                     onClick={startLightsSequence}
-                    className="w-full font-mono text-xs uppercase tracking-wider bg-[var(--color-surface)] border border-[var(--color-surface)] text-[var(--color-text-primary)] py-3 hover:border-[var(--color-accent)] hover:bg-[var(--color-accent)]/10 transition-colors"
+                    className="w-full font-mono text-xs uppercase tracking-wider bg-surface border border-surface text-primary py-3 hover:border-accent hover:bg-accent/10 transition-colors"
                   >
                     Start
                   </button>
@@ -293,7 +318,7 @@ export default function BenchmarksSection() {
                     className={`w-full font-mono text-xs uppercase tracking-widest text-white py-6 select-none ${
                       lightsState === "GO"
                         ? "bg-emerald-700 animate-pulse cursor-pointer"
-                        : "bg-[var(--color-accent)]/80 cursor-pointer"
+                        : "bg-accent/80 cursor-pointer"
                     }`}
                   >
                     {lightsState === "GO"
@@ -304,12 +329,12 @@ export default function BenchmarksSection() {
 
                 <div className="font-mono text-xs h-6 flex items-center justify-center">
                   {lightsState === "COUNTDOWN" && (
-                    <span className="text-[var(--color-text-muted)] animate-pulse">
+                    <span className="text-muted animate-pulse">
                       SYSTEM_STAGE // PREPARING_LIGHTS...
                     </span>
                   )}
                   {lightsState === "WAIT" && (
-                    <span className="text-[var(--color-accent)] animate-pulse">
+                    <span className="text-accent animate-pulse">
                       DRIVERS_READY // WATCH_GANTRY_STATE
                     </span>
                   )}
@@ -320,9 +345,9 @@ export default function BenchmarksSection() {
                     </span>
                   )}
                   {lightsState === "RESULT" && reactionTime !== null && (
-                    <span className="text-[var(--color-text-primary)]">
+                    <span className="text-primary">
                       DIAGNOSTIC //{" "}
-                      <span className="text-[var(--color-accent)] font-bold font-display text-sm">
+                      <span className="text-accent font-bold font-display text-sm">
                         {reactionTime}ms
                       </span>{" "}
                       DELTA // {reactionRating(reactionTime)}
@@ -331,7 +356,7 @@ export default function BenchmarksSection() {
                 </div>
 
                 {record.reactionBest !== null && (
-                  <div className="font-mono text-[10px] text-[var(--color-text-muted)] uppercase tracking-widest">
+                  <div className="font-mono text-[10px] text-muted uppercase tracking-widest">
                     BEST: {record.reactionBest}ms // {record.reactionAttempts}{" "}
                     ATTEMPT
                     {record.reactionAttempts !== 1 ? "S" : ""}
@@ -343,11 +368,30 @@ export default function BenchmarksSection() {
 
           {activeTab === "TYPING" && (
             <div className="space-y-6 w-full max-w-2xl mx-auto py-2">
-              <div className="bg-[var(--color-background)] border border-[var(--color-surface)] p-4 font-mono text-xs leading-relaxed select-none tracking-wide text-[var(--color-text-primary)]">
-                <span className="text-[var(--color-accent)] block text-[10px] mb-1 uppercase tracking-widest">
+              <div className="bg-background border border-surface p-4 font-mono text-xs leading-relaxed select-none tracking-wide text-primary">
+                <span className="text-accent block text-[10px] mb-1 uppercase tracking-widest">
                   Target String Feed:
                 </span>
-                {currentPrompt}
+                <div className="break-words">
+                  {currentPrompt.split("").map((char, index) => {
+                    let colorClass = "text-muted/40"; // default untyped
+
+                    if (index < typedText.length) {
+                      const typedChar = typedText[index];
+                      if (typedChar === char) {
+                        colorClass = "text-primary font-bold"; // correct
+                      } else {
+                        colorClass = "text-accent underline decoration-accent/80 decoration-2"; // incorrect
+                      }
+                    }
+
+                    return (
+                      <span key={index} className={colorClass}>
+                        {char}
+                      </span>
+                    );
+                  })}
+                </div>
               </div>
 
               {/* Data Ingestion Terminal Node */}
@@ -359,16 +403,16 @@ export default function BenchmarksSection() {
                   onChange={handleTypingChange}
                   disabled={wpm !== null}
                   placeholder="Position cursor here and begin typing validation array..."
-                  className="w-full bg-[var(--color-background)] border border-[var(--color-surface)] text-[var(--color-text-primary)] font-mono text-xs px-3 py-3 focus:outline-none focus:border-[var(--color-accent)] disabled:opacity-50 uppercase"
+                  className="w-full bg-background border border-surface text-primary font-mono text-xs px-3 py-3 focus:outline-none focus:border-accent disabled:opacity-50 uppercase"
                 />
 
                 {/* Dedicated Diagnostic Status Message Line */}
-                <div className="h-4 font-mono text-[10px] text-[var(--color-accent)] flex items-center gap-1 transition-all duration-150">
+                <div className="h-4 font-mono text-[10px] text-accent flex items-center gap-1 transition-all duration-150">
                   {typedText.length > 0 &&
                     wpm === null &&
-                    !currentPrompt.startsWith(typedText.toUpperCase()) && (
+                    !currentPrompt.startsWith(typedText) && (
                       <span className="flex items-center gap-1 animate-pulse">
-                        <AlertTriangle className="w-3 h-3" /> STATUS:
+                        <AlertTriangle className="w-3.5 h-3.5" /> STATUS:
                         STREAM_MISMATCH // INVALID_CHARACTER_DETECTED
                       </span>
                     )}
@@ -376,9 +420,9 @@ export default function BenchmarksSection() {
               </div>
 
               {/* Live Metric Evaluation Matrix */}
-              <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between font-mono text-xs border-t border-[var(--color-surface)] pt-4">
+              <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between font-mono text-xs border-t border-surface pt-4">
                 {/* Telemetry Metrics Area (Wraps safely if stats grow too long on mobile) */}
-                <div className="text-[var(--color-text-muted)] flex flex-wrap items-center gap-x-4 gap-y-2">
+                <div className="text-muted flex flex-wrap items-center gap-x-4 gap-y-2">
                   {isTypingActive && (
                     <span className="text-emerald-500 animate-pulse whitespace-nowrap">
                       INGESTION_STREAM_ACTIVE...
@@ -387,7 +431,7 @@ export default function BenchmarksSection() {
                   {wpm !== null && (
                     <span className="whitespace-nowrap">
                       COMPILATION_OUTPUT //{" "}
-                      <span className="text-[var(--color-accent)] font-bold font-display text-sm">
+                      <span className="text-accent font-bold font-display text-sm">
                         {wpm} WPM
                       </span>
                     </span>
@@ -403,7 +447,7 @@ export default function BenchmarksSection() {
                 {/* Reset Action Button (Pushes to the right on desktop, snaps safely below on mobile) */}
                 <button
                   onClick={resetTypingTest}
-                  className="text-[var(--color-text-muted)] hover:text-[var(--color-accent)] transition-colors flex items-center gap-1.5 self-start sm:self-auto border border-[var(--color-surface)]/60 sm:border-none px-3 py-2 sm:p-0 bg-[var(--color-surface)]/30 sm:bg-transparent rounded select-none text-[11px] sm:text-xs"
+                  className="text-muted hover:text-accent transition-colors flex items-center gap-1.5 self-start sm:self-auto border border-surface/60 sm:border-none px-3 py-2 sm:p-0 bg-surface/30 sm:bg-transparent rounded select-none text-[11px] sm:text-xs"
                 >
                   <RefreshCw className="w-3 h-3" />
                   <span>RESET_BUFFER</span>

@@ -12,25 +12,25 @@ export default function HeroSection() {
         transition={{ duration: 0.5 }}
         className="space-y-6"
       >
-        <span className="font-mono text-xs uppercase tracking-widest text-[var(--color-accent)] block">
+        <span className="font-mono text-xs uppercase tracking-widest text-accent block">
           {metaData.role}
         </span>
 
-        <h1 className="font-display text-5xl md:text-[4rem] font-bold tracking-tight text-[var(--color-text-primary)] leading-[1.1]">
+        <h1 className="font-display text-5xl md:text-[4rem] font-bold tracking-tight text-primary leading-[1.1]">
           {metaData.name}
-          <span className="block text-balance text-[var(--color-text-muted)] mt-2 font-body text-3xl md:text-5xl font-medium tracking-normal">
+          <span className="block text-balance text-muted mt-2 font-body text-3xl md:text-5xl font-medium tracking-normal">
             {metaData.tagline}
           </span>
         </h1>
 
-        <p className="font-body text-base md:text-lg text-[var(--color-text-muted)] max-w-2xl leading-relaxed">
+        <p className="font-body text-base md:text-lg text-muted max-w-2xl leading-relaxed">
           {metaData.subLine}
         </p>
 
         <div className="flex flex-wrap gap-4 pt-4">
           <a
             href={`mailto:${metaData.email}`}
-            className="px-6 py-3 font-mono text-sm uppercase tracking-wider transition-all duration-200 active:translate-y-0.5 bg-[var(--color-accent)] text-[var(--color-accent-text)] hover:bg-[var(--color-accent-hover)]"
+            className="px-6 py-3 font-mono text-sm uppercase tracking-wider transition-all duration-200 active:translate-y-0.5 bg-accent text-accent-text hover:bg-accent-hover"
           >
             Get In Touch
           </a>
@@ -38,7 +38,7 @@ export default function HeroSection() {
             href={metaData.linkedin}
             target="_blank"
             rel="noopener noreferrer"
-            className="px-6 py-3 font-mono text-sm uppercase tracking-wider transition-all duration-200 active:translate-y-0.5 bg-transparent text-[var(--color-text-primary)] border border-[var(--color-text-muted)] hover:border-[var(--color-accent)]"
+            className="px-6 py-3 font-mono text-sm uppercase tracking-wider transition-all duration-200 active:translate-y-0.5 bg-transparent text-primary border border-muted hover:border-accent"
           >
             View LinkedIn
           </a>

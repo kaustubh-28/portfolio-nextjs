@@ -30,21 +30,21 @@ export default function ExperienceSection() {
                   <span className="font-mono text-xs text-accent block mb-1">
                     SYS_REF // {entry.id}
                   </span>
-                  <h3 className="font-display text-xl font-bold text-text-primary">
+                  <h3 className="font-display text-xl font-bold text-primary">
                     {entry.role}{" "}
-                    <span className="text-text-muted font-light">@</span>{" "}
+                    <span className="text-muted font-light">@</span>{" "}
                     {entry.company}
                   </h3>
                 </div>
                 <div className="text-left sm:text-right font-mono text-xs space-y-1">
-                  <div className="text-text-primary tracking-wider">
+                  <div className="text-primary tracking-wider">
                     {entry.period}
                   </div>
                   <div className="flex items-center sm:justify-end gap-2">
                     <span
-                      className={`w-1.5 h-1.5 rounded-full ${entry.status === "ACTIVE" ? "bg-accent animate-pulse" : "bg-text-muted"}`}
+                      className={`w-1.5 h-1.5 rounded-full ${entry.status === "ACTIVE" ? "bg-accent animate-pulse" : "bg-muted"}`}
                     />
-                    <span className="text-text-muted text-[10px] tracking-widest">
+                    <span className="text-muted text-[10px] tracking-widest">
                       {entry.status}
                     </span>
                   </div>
@@ -56,7 +56,7 @@ export default function ExperienceSection() {
                 {entry.metrics.map((metric, idx) => (
                   <span
                     key={idx}
-                    className="font-mono text-[11px] bg-accent/10 border border-accent/30 text-text-primary px-3 py-1 rounded-full"
+                    className="font-mono text-[11px] bg-accent/10 border border-accent/30 text-primary px-3 py-1 rounded-full"
                   >
                     Δ {metric}
                   </span>
@@ -64,7 +64,7 @@ export default function ExperienceSection() {
               </div>
 
               {/* Bottom Row: Technical Log Highlights */}
-              <ul className="space-y-3 font-body text-sm text-text-muted list-none pl-0">
+              <ul className="space-y-3 font-body text-sm text-muted list-none pl-0">
                 {entry.highlights.map((highlight, idx) => (
                   <li key={idx} className="relative pl-5 leading-relaxed">
                     <span className="absolute left-0 top-2 w-1.5 h-1.5 border border-accent rotate-45 block" />

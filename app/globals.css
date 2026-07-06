@@ -18,8 +18,8 @@
   --color-background: var(--color-obsidian);
   --color-surface: var(--color-carbon);
   --color-surface-raised: var(--color-carbon-light);
-  --color-text-primary: var(--color-frost);
-  --color-text-muted: var(--color-ash);
+  --color-primary: var(--color-frost);
+  --color-muted: var(--color-ash);
   --color-accent: var(--color-crimson-bright);
   --color-accent-hover: var(--color-signal);
   --color-accent-text: var(--color-white);
@@ -43,7 +43,7 @@
 
   body {
     background-color: var(--color-background);
-    color: var(--color-text-primary);
+    color: var(--color-primary);
     font-family: var(--font-body);
     -webkit-font-smoothing: antialiased;
     transition:
@@ -61,8 +61,8 @@
   [data-theme="light"] {
     --color-background: var(--color-cream);
     --color-surface: var(--color-cream-surface);
-    --color-text-primary: var(--color-forest);
-    --color-text-muted: var(--color-fern);
+    --color-primary: var(--color-forest);
+    --color-muted: var(--color-fern);
     --color-accent: var(--color-burnt);
     --color-accent-hover: var(--color-fern);
     --color-accent-text: var(--color-cream);

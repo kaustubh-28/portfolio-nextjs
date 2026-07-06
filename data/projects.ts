@@ -3,7 +3,6 @@ export interface ProjectSystem {
   tag: string;
   title: string;
   status: "IN_DEVELOPMENT" | "STAGING" | "PROTOTYPE" | "COMPLETED";
-  statusColor: string;
   description: string;
   stack: string[];
   metrics: string[];
@@ -17,7 +16,6 @@ export const projectSystems: ProjectSystem[] = [
     tag: "EXAM_PORTAL",
     title: "Online Examination Core",
     status: "IN_DEVELOPMENT",
-    statusColor: "text-amber-500 border-amber-500/20 bg-amber-500/10",
     description:
       "A full-stack examination engine isolating role-based state hierarchies for students, proctors, and administrators. Engineered with transactional state safeguards to prevent data corruption during simultaneous, high-volume test submissions.",
     stack: ["React", "Node.js", "MongoDB", "Passport.js"],
@@ -34,7 +32,6 @@ export const projectSystems: ProjectSystem[] = [
     tag: "SONG_RELAY",
     title: "Send The Song",
     status: "IN_DEVELOPMENT",
-    statusColor: "text-amber-500 border-amber-500/20 bg-amber-500/10",
     description:
       "An anonymous music dedication platform — search a track, attach a message, generate a shareable link. Built to handle viral write spikes where a single link can trigger thousands of simultaneous reads. Inspired by the emotional simplicity of sendthesong.xyz.",
     stack: ["Next.js", "Tailwind CSS", "Framer Motion", "MongoDB"],
@@ -51,7 +48,6 @@ export const projectSystems: ProjectSystem[] = [
     tag: "AI_SCREENER",
     title: "AI Resourcing Pipeline",
     status: "PROTOTYPE",
-    statusColor: "text-purple-500 border-purple-500/20 bg-purple-500/10",
     description:
       "An automated document intelligence asset that processes unstructured file streams to return instant alignment vectors, structured skill gaps, and token-optimized contextual analysis summaries.",
     stack: ["Next.js", "Node.js", "Claude API", "MongoDB"],
@@ -68,7 +64,6 @@ export const projectSystems: ProjectSystem[] = [
     tag: "MSG_BROKER",
     title: "Anonymous Message Switch",
     status: "IN_DEVELOPMENT",
-    statusColor: "text-amber-500 border-amber-500/20 bg-amber-500/10",
     description:
       "A high-concurrency storage-and-dispatch switchboard built to accept rapid, anonymous spatial payloads. Focuses strictly on high-write database operations and cache-layer lookups to handle sudden viral traffic spikes.",
     stack: ["Next.js", "Tailwind CSS", "Framer Motion", "MongoDB"],
