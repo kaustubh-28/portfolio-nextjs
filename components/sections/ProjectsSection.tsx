@@ -219,6 +219,8 @@ export default function ProjectsSection() {
                 <div className="flex items-center gap-4 font-mono text-xs shrink-0">
                   <a
                     href={activeProject.repoUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="flex items-center gap-1.5 text-muted hover:text-accent transition-colors"
                   >
                     <SiGithub className="w-3.5 h-3.5" />
@@ -226,6 +228,8 @@ export default function ProjectsSection() {
                   </a>
                   <a
                     href={activeProject.liveUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="flex items-center gap-1.5 text-muted hover:text-accent transition-colors"
                   >
                     <span>LIVE_DEMO</span>
