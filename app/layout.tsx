@@ -3,6 +3,8 @@ import "./globals.css";
 import { metaData } from "@/data/meta";
 import BackgroundGrid from "@/components/ui/BackgroundGrid";
 import { sora, spaceGrotesk, jetbrainsMono } from "./fonts";
+import { Analytics } from "@vercel/analytics/react";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 export const metadata: Metadata = {
   title: metaData.name,
@@ -23,6 +25,8 @@ export default function RootLayout({
       <body>
         <BackgroundGrid />
         {children}
+        <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );
